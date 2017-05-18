@@ -1,16 +1,18 @@
-package com.company;
+package com.company.Genetic;
+
+import java.util.ArrayList;
 
 /**
  * Created by danma on 12/05/2017.
  */
 public class Population {
     private ArrayList<Chromosome> chromosomes;
-    private int currentStrength;
+    private double currentStrength;
 
     public Population(int populationSize, int cromossomeLength){
         this.chromosomes = new ArrayList<Chromosome>();
         this.currentStrength = -1;
-        initiatePopulation(this.populationSize, cromossomeLength);
+        initiatePopulation(populationSize, cromossomeLength);
     }
 
     public void initiatePopulation(int p_size, int c_length){
@@ -19,11 +21,11 @@ public class Population {
         }
     }
 
-    public int getCurrentStrength() {
+    public double getCurrentStrength() {
         return currentStrength;
     }
 
-    public void setCurrentStrength(int currentStrength) {
+    public void setCurrentStrength(double currentStrength) {
         this.currentStrength = currentStrength;
     }
 
@@ -36,6 +38,6 @@ public class Population {
     }
 
     public int getSlotFromChromosome (int id_exame){
-        chromosomes.get(id_exame);
+       return 0;//chromosomes.get(id_exame);
     }
 }

@@ -1,5 +1,7 @@
 package com.company;
 
+import com.company.Genetic.Population;
+
 import Domain.Calendar;
 import Domain.Exam;
 import Domain.Student;
@@ -75,16 +77,16 @@ public class GeneticAlgorithm {
     public void checkCalendar(){
         double strength = 0;
         for(int i = 0;  i< calendar.getStudents().size();i++){
-            double space_s = calculateSpaceBetweenExams(calendar.getStudents().get(i));
+           // double space_s = calculateSpaceBetweenExams(calendar.getStudents().get(i));
         }
 
-        population.setStrength(fitness);
+        population.setCurrentStrength(strength);
     }
 
-    public double calculateSpaceBetweenExams(Student s){
+   /** public double calculateSpaceBetweenExams(Student s){
         Integer[] slots;
         for (int i =0; i< s.getExams().size(); i++){
             //slots.add(s.getExams().get(i).)
         }
-    }
+    }**/
 }

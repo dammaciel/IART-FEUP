@@ -7,7 +7,6 @@ public class Utils {
 
     public static int getBlocksSize(int days){
         int n_slots = days*3; //cada dia tem 3 slots
-        return (int) Integer.toBinaryString(n_slots);
-    }
-    
+        return  Integer.toString(n_slots,2).length();
+    }    
 }

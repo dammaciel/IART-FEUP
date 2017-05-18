@@ -25,7 +25,7 @@ public class Calendar {
         this.students.add(s);
     }
 
-    public int getNumberOfExams(){ this.exams.size() }
+    public int getNumberOfExams(){ return this.exams.size(); }
 
     public ArrayList<Exam> getExams() {
         return exams;

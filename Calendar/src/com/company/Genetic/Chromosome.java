@@ -1,4 +1,4 @@
-package com.company;
+package com.company.Genetic;
 
 /**
  * Created by danma on 12/05/2017.
@@ -7,12 +7,12 @@ public class Chromosome {
     private Integer[] chromosome;
 
     public Chromosome(int size){
-        this.chromossome = new Integer[size];
+        this.chromosome = new Integer[size];
         initiateChromosome();
     }
 
     public void initiateChromosome(){
-        for (int i = 0; i < chromossome.length; i++) {
+        for (int i = 0; i < chromosome.length; i++) {
             if(Math.random() < 0.5){
                 this.chromosome[i]=1;
             }else{
@@ -21,7 +21,7 @@ public class Chromosome {
         }
     }
 
-    publicc int translateSlot(){
+    public int translateSlot(){
         StringBuilder binary = new StringBuilder();
         for (int digit : chromosome)
         {

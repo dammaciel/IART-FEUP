@@ -33,4 +33,8 @@ public class Student {
     public void addExame(Exam e){
         this.exams.add(e);
     }
+
+    public ArrayList<Exam> getExams() {
+        return exams;
+    }
 }

@@ -24,4 +24,14 @@ public class Calendar {
     public void addStudent(Student s){
         this.students.add(s);
     }
+
+    public int getNumberOfExams(){ this.exams.size() }
+
+    public ArrayList<Exam> getExams() {
+        return exams;
+    }
+
+    public ArrayList<Student> getStudents() {
+        return students;
+    }
 }

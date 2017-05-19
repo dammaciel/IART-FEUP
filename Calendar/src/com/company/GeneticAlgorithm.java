@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.Arrays;
+
 import com.company.Genetic.Population;
 
 import Domain.Calendar;
@@ -22,7 +24,7 @@ public class GeneticAlgorithm {
         this.mutation=0.5;
         this.crossover=0.3;
         this.elitist=0.15;
-        this.n_days=30;
+        this.n_days=5;
     }
 
     public GeneticAlgorithm(double mutation, double crossover, double elitist, int days){
@@ -65,6 +67,9 @@ public class GeneticAlgorithm {
 
         calendar.addExam(e1);calendar.addExam(e2);calendar.addExam(e3);calendar.addExam(e4);calendar.addExam(e5);calendar.addExam(e6);
         calendar.addExam(e7);calendar.addExam(e8);
+        
+        calendar.addStudent(s1);calendar.addStudent(s2);calendar.addStudent(s3);calendar.addStudent(s4);
+        start();
 }
 
     public void start(){
@@ -77,16 +82,31 @@ public class GeneticAlgorithm {
     public void checkCalendar(){
         double strength = 0;
         for(int i = 0;  i< calendar.getStudents().size();i++){
-           // double space_s = calculateSpaceBetweenExams(calendar.getStudents().get(i));
+           strength += calculateSpaceBetweenExams(calendar.getStudents().get(i));
         }
-
+        System.out.println(strength/calendar.getStudents().size());
         population.setCurrentStrength(strength);
     }
 
-   /** public double calculateSpaceBetweenExams(Student s){
-        Integer[] slots;
+    public double calculateSpaceBetweenExams(Student s){
+        Integer[] slots = new Integer[s.getExams().size()];
         for (int i =0; i< s.getExams().size(); i++){
-            //slots.add(s.getExams().get(i).)
+           slots[i]=Integer.parseInt(population.getSlotFromChromosome(s.getExams().get(i).getId()),2);
         }
-    }**/
+        Arrays.sort(slots);
+        
+        System.out.println("SOU O ESTUDANTE: "+ s.getName());
+        for (int i =0; i< s.getExams().size(); i++){
+        	 //System.out.println(Utils.convertSlotToDate(slots[i]));
+        	System.out.println(slots[i]);
+         }
+        int x=0;
+        for (int i =0; i< slots.length-1; i++){
+        		x+=(slots[i+1]-slots[i]);
+        }
+        System.out.println("Média: " + x/slots.length );
+        System.out.println(" ");
+        return x/slots.length;
+    }
+
 }

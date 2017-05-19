@@ -37,7 +37,7 @@ public class Population {
         this.chromosomes = chromosomes;
     }
 
-    public int getSlotFromChromosome (int id_exame){
-       return 0;//chromosomes.get(id_exame);
+    public String getSlotFromChromosome (int id_exame){
+       return chromosomes.get(id_exame).translateSlot();
     }
 }

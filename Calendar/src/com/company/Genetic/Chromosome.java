@@ -21,12 +21,12 @@ public class Chromosome {
         }
     }
 
-    public int translateSlot(){
+    public String translateSlot(){
         StringBuilder binary = new StringBuilder();
         for (int digit : chromosome)
         {
             binary.append(digit);
         }
-        return Integer.parseInt(binary.toString());
+        return binary.toString().replace(' ', '0');
     }
 }

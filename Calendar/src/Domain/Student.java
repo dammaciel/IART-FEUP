@@ -16,6 +16,7 @@ public class Student {
         this.id = id;
         this.name = name;
         this.currentYear = currentYear;
+        this.exams = new ArrayList<Exam>();
     }
 
     public int getId() {

@@ -38,4 +38,15 @@ public class Student {
     public ArrayList<Exam> getExams() {
         return exams;
     }
+    
+    public double calculateExamsInDay(){
+    	double percentage=0;
+    	for (Exam e: exams){
+    		if(e.getYear()==this.currentYear){
+    			percentage++;
+    		}
+    	}
+    	percentage=percentage/this.exams.size();
+    	return percentage;
+    }
 }

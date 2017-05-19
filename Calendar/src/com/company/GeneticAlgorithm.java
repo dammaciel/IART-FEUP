@@ -19,12 +19,13 @@ public class GeneticAlgorithm {
     int n_days;
     Calendar calendar;
     Population population;
+    double strength;
 
     public GeneticAlgorithm(){
         this.mutation=0.5;
         this.crossover=0.3;
         this.elitist=0.15;
-        this.n_days=5;
+        this.n_days=10;
     }
 
     public GeneticAlgorithm(double mutation, double crossover, double elitist, int days){
@@ -74,17 +75,24 @@ public class GeneticAlgorithm {
 
     public void start(){
         int blockSize = Utils.getBlocksSize(n_days);
-        population = new Population(calendar.getNumberOfExams() , blockSize);
-        checkCalendar();
+        population = new Population(calendar.getNumberOfExams() , blockSize, n_days);
+        checkCalendarStrength();
 
     }
 
-    public void checkCalendar(){
+    public void checkCalendarStrength(){
         double strength = 0;
+        int overlapFlag=1; //flag=0 se houver exames sobrepostos
         for(int i = 0;  i< calendar.getStudents().size();i++){
-           strength += calculateSpaceBetweenExams(calendar.getStudents().get(i));
+           double space= calculateSpaceBetweenExams(calendar.getStudents().get(i));
+           if(space==-1){
+        	   overlapFlag=0;
+           }
+           double examsInDay = calendar.getStudents().get(i).calculateExamsInDay();
+           strength+= space*examsInDay;
         }
-        System.out.println(strength/calendar.getStudents().size());
+        strength=(strength/calendar.getStudents().size())*overlapFlag;
+        System.out.println("Força do Calendário: "+strength);
         population.setCurrentStrength(strength);
     }
 
@@ -97,16 +105,51 @@ public class GeneticAlgorithm {
         
         System.out.println("SOU O ESTUDANTE: "+ s.getName());
         for (int i =0; i< s.getExams().size(); i++){
-        	 //System.out.println(Utils.convertSlotToDate(slots[i]));
         	System.out.println(slots[i]);
          }
+        
         int x=0;
         for (int i =0; i< slots.length-1; i++){
+        	if((slots[i+1]-slots[i])>0){
         		x+=(slots[i+1]-slots[i]);
+        	}else{
+        		System.out.println("Exames Sobrepostos!!");
+                System.out.println(" ");
+        		return -1;
+        	}
+        		
         }
+        
         System.out.println("Média: " + x/slots.length );
         System.out.println(" ");
         return x/slots.length;
+    }
+    
+    public Object [][] getTab(){
+        Object [][] tabela = new Object[3][n_days+1];
+        tabela[0][0]="09h00";
+        tabela[1][0]="14h00";
+        tabela[2][0]="18h00";
+        int exam;
+        for(int i = 0; i<calendar.getExams().size();i++){
+        	exam=Integer.parseInt(population.getSlotFromChromosome(calendar.getExams().get(i).getId()),2);
+        	int[] slot=Utils.convertSlotToDate(exam);
+        	if(tabela[slot[0]][slot[1]]==null){
+        		tabela[slot[0]][slot[1]]= calendar.getExams().get(i).getName();
+        	}else{
+        		tabela[slot[0]][slot[1]]+="/" + calendar.getExams().get(i).getName();
+        	}
+        }	
+        return tabela;
+    }
+    
+    public String[] getHeaders(){
+        String[] novo = new String[n_days+1];
+        for(int i=0;i<novo.length;i++){
+            if(i==0){novo[i]="Hora";}
+            else{novo[i]="Dia "+i;}
+        }
+        return novo;
     }
 
 }

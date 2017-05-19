@@ -9,15 +9,15 @@ public class Population {
     private ArrayList<Chromosome> chromosomes;
     private double currentStrength;
 
-    public Population(int populationSize, int cromossomeLength){
+    public Population(int populationSize, int cromossomeLength, int n_days){
         this.chromosomes = new ArrayList<Chromosome>();
         this.currentStrength = -1;
-        initiatePopulation(populationSize, cromossomeLength);
+        initiatePopulation(populationSize, cromossomeLength, n_days);
     }
 
-    public void initiatePopulation(int p_size, int c_length){
+    public void initiatePopulation(int p_size, int c_length, int n_days){
         for (int i = 0; i < p_size; i++) {
-            chromosomes.add(new Chromosome(c_length));
+            chromosomes.add(new Chromosome(c_length, n_days));
         }
     }
 

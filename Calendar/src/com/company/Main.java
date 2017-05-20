@@ -1,15 +1,22 @@
 package com.company;
 
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+
 public class Main extends javax.swing.JFrame {
 	
 	GeneticAlgorithm ga;
 	
+	private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JSpinner jSpinner1;
+    private javax.swing.JLabel jLabel4;
     
 	public static void main(String args[]) {
         try {
@@ -47,9 +54,13 @@ public class Main extends javax.swing.JFrame {
     	 jPanel1 = new javax.swing.JPanel();
          jLabel1 = new javax.swing.JLabel();
          jLabel2 = new javax.swing.JLabel();
+         jLabel3 = new javax.swing.JLabel();
+         jButton1 = new javax.swing.JButton();
          jButton2 = new javax.swing.JButton();
          jScrollPane1 = new javax.swing.JScrollPane();
          jTable1 = new javax.swing.JTable();
+         jLabel4 = new javax.swing.JLabel();
+        
          
          setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -58,13 +69,31 @@ public class Main extends javax.swing.JFrame {
          jLabel1.setText("IART - 2017/2018");
          
          jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-         jLabel2.setText(" Otimização da Calendarização de Exames");
+         jLabel2.setText("Otimização da Calendarização de Exames");
+         
+         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+         jLabel3.setText("Nº dias da Época de Exames: ");
+         
+         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+         jLabel4.setText(" ");
 
-
+         SpinnerModel spinnerModel = new SpinnerNumberModel(10, //initial value
+            0, //min
+            30, //max
+            1);//step
+         jSpinner1 = new javax.swing.JSpinner(spinnerModel);
+         
          jButton2.setText("Gerar Novo Calendario");
          jButton2.addActionListener(new java.awt.event.ActionListener() {
              public void actionPerformed(java.awt.event.ActionEvent evt) {
                  jButton2ActionPerformed(evt);
+             }
+         });
+         
+         jButton1.setText("Executar Algoritmo");
+         jButton1.addActionListener(new java.awt.event.ActionListener() {
+             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                 jButton1ActionPerformed(evt);
              }
          });
 
@@ -108,8 +137,15 @@ public class Main extends javax.swing.JFrame {
                      .addGroup(jPanel1Layout.createSequentialGroup()
                          .addContainerGap(282, Short.MAX_VALUE)
                          .addComponent(jButton2)
+                         .addGap(0, 240, Short.MAX_VALUE)
+                         .addComponent(jButton1))
+                     .addGroup(jPanel1Layout.createSequentialGroup()
+                         .addContainerGap(282, Short.MAX_VALUE)
+                         .addComponent(jLabel3)
+                         .addComponent(jSpinner1,  javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                          .addGap(0, 240, Short.MAX_VALUE))
-                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING))
+                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                  .addContainerGap())
              .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                  .addGap(0, 0, Short.MAX_VALUE)
@@ -126,12 +162,19 @@ public class Main extends javax.swing.JFrame {
                  .addComponent(jLabel2)
                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                  .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                     .addComponent(jButton2))
+                     .addComponent(jButton2)
+                     .addComponent(jButton1))
                  .addGap(28, 28, 28)
                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                		 .addComponent(jLabel3)
+                         .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                 .addGap(28, 28, 28)
                  .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                  .addGap(34, 34, 34)
-                 .addContainerGap(46, Short.MAX_VALUE))
+                 .addContainerGap(46, Short.MAX_VALUE)
+                 .addComponent(jLabel4))
+             
          );
 
          javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -153,12 +196,19 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
-		ga = new GeneticAlgorithm();
+		ga = new GeneticAlgorithm((Integer) jSpinner1.getValue());
 	    ga.autofillCalendar();
         updateTable();
+        jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getCurrentStrength()));
     }
     
-    private void updateTable(){
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+		ga.geraMutante();
+        updateTable();
+        jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getCurrentStrength()));
+    }
+    
+    public void updateTable(){
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             ga.getTab(),
             ga.getHeaders()

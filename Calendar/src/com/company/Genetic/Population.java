@@ -1,6 +1,8 @@
 package com.company.Genetic;
 
 import java.util.ArrayList;
+import Utils.Utils;
+
 
 /**
  * Created by danma on 12/05/2017.
@@ -9,10 +11,15 @@ public class Population {
     private ArrayList<Chromosome> chromosomes;
     private double currentStrength;
 
-    public Population(int populationSize, int cromossomeLength, int n_days){
+    public Population(int populationSize, int n_days){
         this.chromosomes = new ArrayList<Chromosome>();
         this.currentStrength = -1;
-        initiatePopulation(populationSize, cromossomeLength, n_days);
+        initiatePopulation(populationSize, Utils.getBlocksSize(n_days), n_days);
+    }
+    
+    public Population(){
+    	this.chromosomes = new ArrayList<Chromosome>();
+        this.currentStrength = -1;
     }
 
     public void initiatePopulation(int p_size, int c_length, int n_days){
@@ -39,5 +46,13 @@ public class Population {
 
     public String getSlotFromChromosome (int id_exame){
        return chromosomes.get(id_exame).translateSlot();
+    }
+    
+    public Chromosome getChromosomeByPosition(int index){		
+		return chromosomes.get(index);
+	}
+    
+    public void addChromosome(Chromosome c){
+    	this.chromosomes.add(c);
     }
 }

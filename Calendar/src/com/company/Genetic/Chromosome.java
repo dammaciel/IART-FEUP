@@ -33,4 +33,11 @@ public class Chromosome {
         }
         return binary.toString().replace(' ', '0');
     }
+    public int getGeneByPosition(int i){
+    	return this.chromosome[i];
+    }
+    
+    public void setGeneInPosition(int i, int gene){
+    	this.chromosome[i]=gene;
+    }
 }

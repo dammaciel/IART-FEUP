@@ -2,6 +2,7 @@ package com.company;
 
 import java.util.Arrays;
 
+import com.company.Genetic.Chromosome;
 import com.company.Genetic.Population;
 
 import Domain.Calendar;
@@ -20,12 +21,14 @@ public class GeneticAlgorithm {
     Calendar calendar;
     Population population;
     double strength;
+    int iteration;
 
-    public GeneticAlgorithm(){
+    public GeneticAlgorithm(int n_days){
         this.mutation=0.5;
-        this.crossover=0.3;
+        this.crossover=0.5;
         this.elitist=0.15;
-        this.n_days=10;
+        this.n_days=n_days;
+        this.iteration=0;
     }
 
     public GeneticAlgorithm(double mutation, double crossover, double elitist, int days){
@@ -35,7 +38,11 @@ public class GeneticAlgorithm {
         this.n_days=days;
     }
 
-    public void autofillCalendar(){
+    public Population getPopulation() {
+		return population;
+	}
+
+	public void autofillCalendar(){
         Exam e1 = new Exam(0,"IART",3);
         Exam e2 = new Exam(1,"SDIS",3);
         Exam e3 = new Exam(2,"MEST",1);
@@ -74,17 +81,22 @@ public class GeneticAlgorithm {
 }
 
     public void start(){
-        int blockSize = Utils.getBlocksSize(n_days);
-        population = new Population(calendar.getNumberOfExams() , blockSize, n_days);
-        checkCalendarStrength();
+        population = new Population(calendar.getNumberOfExams(), n_days);
+
+        checkCalendarStrength(population);
+        
+        //while(iteration<5){
+        //	geraMutante();
+        //	iteration++;
+        //}
 
     }
 
-    public void checkCalendarStrength(){
+    public void checkCalendarStrength(Population populationT){
         double strength = 0;
         int overlapFlag=1; //flag=0 se houver exames sobrepostos
         for(int i = 0;  i< calendar.getStudents().size();i++){
-           double space= calculateSpaceBetweenExams(calendar.getStudents().get(i));
+           double space= calculateSpaceBetweenExams(calendar.getStudents().get(i), populationT);
            if(space==-1){
         	   overlapFlag=0;
            }
@@ -92,36 +104,25 @@ public class GeneticAlgorithm {
            strength+= space*examsInDay;
         }
         strength=(strength/calendar.getStudents().size())*overlapFlag;
-        System.out.println("Força do Calendário: "+strength);
-        population.setCurrentStrength(strength);
+        populationT.setCurrentStrength(strength);
     }
 
-    public double calculateSpaceBetweenExams(Student s){
+    public double calculateSpaceBetweenExams(Student s, Population populationT){
         Integer[] slots = new Integer[s.getExams().size()];
         for (int i =0; i< s.getExams().size(); i++){
-           slots[i]=Integer.parseInt(population.getSlotFromChromosome(s.getExams().get(i).getId()),2);
+           slots[i]=Integer.parseInt(populationT.getSlotFromChromosome(s.getExams().get(i).getId()),2);
         }
         Arrays.sort(slots);
-        
-        System.out.println("SOU O ESTUDANTE: "+ s.getName());
-        for (int i =0; i< s.getExams().size(); i++){
-        	System.out.println(slots[i]);
-         }
         
         int x=0;
         for (int i =0; i< slots.length-1; i++){
         	if((slots[i+1]-slots[i])>0){
         		x+=(slots[i+1]-slots[i]);
         	}else{
-        		System.out.println("Exames Sobrepostos!!");
-                System.out.println(" ");
         		return -1;
         	}
         		
         }
-        
-        System.out.println("Média: " + x/slots.length );
-        System.out.println(" ");
         return x/slots.length;
     }
     
@@ -150,6 +151,43 @@ public class GeneticAlgorithm {
             else{novo[i]="Dia "+i;}
         }
         return novo;
+    }
+    
+    public void geraMutante(){
+    	int mutantes =0;
+    	int tentativas=0;
+    	
+    	// while(tentativas<100 && mutantes<100){
+    		 crossoverPopulation();
+        // }
+    }
+    
+    public void crossoverPopulation(){
+    	Population population2 =  new Population();
+    	int size = Utils.getBlocksSize(n_days);
+    	for(int i=0; i<calendar.getNumberOfExams(); i++){
+    		Chromosome c1 = population.getChromosomeByPosition(i);
+    		if(this.crossover > Math.random()){
+    			Chromosome new_chromosome = new Chromosome (size, n_days); 
+
+    			int breakIndex = (int)(Math.random() * size);
+    			
+    			for(int j = 0; j < size; j++){					
+					if(j < breakIndex){
+						new_chromosome.setGeneInPosition(j, c1.getGeneByPosition(j));
+					}else{
+						new_chromosome.setGeneInPosition(j, (Math.random()<0.5)?0:1);
+					}
+				}
+    			population2.addChromosome(new_chromosome);
+    		}else{
+    			population2.addChromosome(c1);
+    		}
+    	}
+    	checkCalendarStrength(population2);
+    	if(this.population.getCurrentStrength()<population2.getCurrentStrength()){
+        	this.population=population2;
+    	}
     }
 
 }

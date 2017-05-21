@@ -210,7 +210,7 @@ public class Main extends javax.swing.JFrame {
 		this.comboValue = 0;
 		this.StudentSelected = null;
 		this.jCombobox.removeAllItems();
-		this.jCombobox.addItem("All");
+		this.jCombobox.addItem("Todos");
 		for (int i = 0; i < ga.getStudents().size(); i++) {
 			this.jCombobox.addItem(ga.getStudents().get(i).getName());
 			;

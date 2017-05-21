@@ -22,8 +22,8 @@ public class Chromosome {
 		this.n_genes = n_exams;
 		this.chromosome = new ArrayList<Gene>();
 		this.currentStrength = -1;
-		if(bool){
-		initiateChromosome(Utils.getBlocksSize(n_days), n_days);
+		if (bool) {
+			initiateChromosome(Utils.getBlocksSize(n_days), n_days);
 		}
 	}
 
@@ -76,30 +76,46 @@ public class Chromosome {
 
 		return sb.toString();
 	}
-	
-	public void calculateStrength(){
-		double strength =getCurrentStrength();
-		int overlapFlag = 1; // flag=0 se houver exames sobrepostos
+
+	/**
+	 * Calcula a Força do Indivíduo
+	 */
+	public void calculateStrength() {
+		double strength = getCurrentStrength(); // default=-1
+		// flag=0 se houver exames sobrepostos
+		int overlapFlag = 1;
 		for (int i = 0; i < cal.getStudents().size(); i++) {
 			double space = calculateSpaceBetweenExams(cal.getStudents().get(i));
 			if (space == -1) {
 				overlapFlag = 0;
 			}
+			// Percentagem de exames que o aluno tem que são do seu ano corrente
 			double examsInDay = cal.getStudents().get(i).calculateExamsInDay();
+			// Somatório do espaço entre exames de cada Aluno tendo em conta
+			// desvalorizações
 			strength += space * examsInDay;
 		}
-
+		// Força total do Indivíduo, caso haja algum aluno com exames
+		// sobrepostos a força será automaticamente 0.
 		strength = (strength / cal.getStudents().size()) * overlapFlag;
 		setCurrentStrength(strength);
 	}
-	
+
+	/**
+	 * Calcula espaçamento entre exames do Aluno S
+	 * 
+	 * @param s - Student
+	 * @return Space Average
+	 */
 	private double calculateSpaceBetweenExams(Student s) {
 		Integer[] slots = new Integer[s.getExams().size()];
 		for (int i = 0; i < s.getExams().size(); i++) {
+			// Guarda a posição do Exame i no Calendário
 			slots[i] = Integer.parseInt(getSlotFromGene(s.getExams().get(i).getId()), 2);
 		}
+		// Ordena os slots para calcular espaçamento entre os exames mais
+		// próximos
 		Arrays.sort(slots);
-
 		int x = 0;
 		for (int i = 0; i < slots.length - 1; i++) {
 			if ((slots[i + 1] - slots[i]) > 0) {
@@ -115,6 +131,5 @@ public class Chromosome {
 	public void setChromosome(ArrayList<Gene> chromosome) {
 		this.chromosome = chromosome;
 	}
-	
-	
+
 }

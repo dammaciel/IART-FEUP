@@ -126,7 +126,6 @@ public class GeneticAlgorithm {
 		tabela[1][0] = "14h00";
 		tabela[2][0] = "18h00";
 		int exam;
-		//System.out.println(this.population.getFittest() + " - " + this.population.getFittest().getCurrentStrength());
 		for (int i = 0; i < calendar.getExams().size(); i++) {
 			exam = Integer.parseInt(population.getFittest().getSlotFromGene(calendar.getExams().get(i).getId()), 2);
 			int[] slot = Utils.convertSlotToDate(exam);
@@ -150,13 +149,13 @@ public class GeneticAlgorithm {
 		}
 		return novo;
 	}
-	
-	public void solveAlgoritmo(){
-		Chromosome elitist = new Chromosome (this.n_days, this.calendar.getNumberOfExams(), this.calendar, false);
+
+	public void solveAlgoritmo() {
+		Chromosome elitist = new Chromosome(this.n_days, this.calendar.getNumberOfExams(), this.calendar, false);
 		elitist.setChromosome(this.population.getFittest().getChromosome());
 		elitist.calculateStrength();
 		Population new_population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar, false);
-		for(Chromosome c: population.getPopulation()){
+		for (Chromosome c : population.getPopulation()) {
 			new_population.addChromosome(c);
 		}
 		new_population.calculateFittest();
@@ -165,109 +164,140 @@ public class GeneticAlgorithm {
 		crossover(new_population, elitist);
 		new_population.calculateFittest();
 		mutate(new_population);
-		for(Chromosome c: new_population.getPopulation()){
+		for (Chromosome c : new_population.getPopulation()) {
 			this.population.addChromosome(c);
 		}
 		population.calculateFittest();
 	}
-	
-	public void solveAlgoritmo100(){
+
+	public void solveAlgoritmo100() {
 		int x = this.iteration;
 		while (x > 0) {
-		
-		Chromosome elitist = new Chromosome (this.n_days, this.calendar.getNumberOfExams(), this.calendar, false);
-		elitist.setChromosome(this.population.getFittest().getChromosome());
-		elitist.calculateStrength();
-		Population new_population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar, false);
-		for(Chromosome c: population.getPopulation()){
-			new_population.addChromosome(c);
-		}
-		new_population.calculateFittest();
-		elitist = new_population.getFittest();
-		new_population.cleanPopulation();
-		crossover(new_population, elitist);
-		new_population.calculateFittest();
-		mutate(new_population);
-		for(Chromosome c: new_population.getPopulation()){
-			System.out.println(c.getCurrentStrength());
-			this.population.addChromosome(c);
-		}
-		population.calculateFittest();
-		x--;
+
+			Chromosome elitist = new Chromosome(this.n_days, this.calendar.getNumberOfExams(), this.calendar, false);
+			elitist.setChromosome(this.population.getFittest().getChromosome());
+			elitist.calculateStrength();
+			Population new_population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar,
+					false);
+			for (Chromosome c : population.getPopulation()) {
+				new_population.addChromosome(c);
+			}
+			new_population.calculateFittest();
+			elitist = new_population.getFittest();
+			new_population.cleanPopulation();
+			crossover(new_population, elitist);
+			new_population.calculateFittest();
+			mutate(new_population);
+			for (Chromosome c : new_population.getPopulation()) {
+				System.out.println(c.getCurrentStrength());
+				this.population.addChromosome(c);
+			}
+			population.calculateFittest();
+			x--;
 		}
 	}
-	
-	public void crossover(Population pop, Chromosome elitist){
+
+	/**
+	 * Acrescenta à população um individuo resultante do cruzamento entre o
+	 * Elitista e um outro Indivíduo;
+	 * 
+	 * @param pop - Population
+	 * @param elitist - Elitist
+	 */
+	public void crossover(Population pop, Chromosome elitist) {
 		int n_exams = calendar.getNumberOfExams();
 		for (int i = 0; i < this.n_pop; i++) {
 			Chromosome c = elitist;
+			// Gera um número entre 0 e 1 e se for superior ao valor mínimo
+			// estipulado executa-se o cruzamento
 			if (Math.random() > this.crossover) {
 				Chromosome new_chromosome = new Chromosome(this.n_days, n_exams, this.calendar, true);
 				Chromosome c2 = getCrossoverParent(c);
-				
+				// Posição aleatório que determina o ponto do cruzameto
 				int breakIndex = (int) (Math.random() * n_exams);
 				for (int j = 0; j < n_exams; j++) {
+					// (À esquerda do posição gerada é elitista e à direita será
+					// genes do outro pai)
 					if (j < breakIndex) {
 						new_chromosome.setGeneInPosition(j, c.getGeneByPosition(j));
 					} else {
 						new_chromosome.setGeneInPosition(j, c2.getGeneByPosition(j));
 					}
 				}
-
 				new_chromosome.calculateStrength();
 				pop.addChromosome(new_chromosome);
 			}
 		}
-		
+
 	}
 
-	public void mutate(Population pop){
-		int pop_size= pop.getPopulation().size();
-		Population new_population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar, false);
-		int n_exams = calendar.getNumberOfExams();
-		for (int i = 0; i < pop_size; i++) {
-			System.out.println("Inciio");
-
-			Chromosome c = pop.getPopulation().get(i);
-			System.out.println(c);
-			if (Math.random() > this.mutation) {
-				Chromosome new_chromosome = new Chromosome(this.n_days, n_exams, this.calendar, true);
-				for (int j = 0; j < n_exams; j++) {
-					if (Math.random() > 0.5) {
-						new_chromosome.setGeneInPosition(j, c.getGeneByPosition(j));
-					} else {
-						Gene y  = new Gene(Utils.getBlocksSize(n_days), n_days);
-						Integer[] new_gene = new Integer[Utils.getBlocksSize(n_days)];
-						for(int k =0; k<Utils.getBlocksSize(n_days); k++ ){
-							new_gene[k]=1 - c.getGeneByPosition(j).getGene()[k];
-						}
-						y.setGene(new_gene);
-						if(!y.validateGene()){
-							y = c.getGeneByPosition(j);
-						}
-						new_chromosome.setGeneInPosition(j, y);
-					}
-				}
-				System.out.println(new_chromosome);
-				new_chromosome.calculateStrength();
-				new_population.addChromosome(new_chromosome);
-			}else{
-				new_population.addChromosome(c);
-			}
-		}
-		pop.setPopulation(new_population.getPopulation());
-	}
-	
+	/**
+	 * Retorna o Pai que vai cruzar com o Elitista;
+	 * 
+	 * @param c - Elitist
+	 * @return 2nd Parent
+	 */
 	public Chromosome getCrossoverParent(Chromosome c) {
 		ArrayList<Chromosome> chromosomes = population.getPopulation();
+
+		// Gere um número entre 0 e a Força do Elitista;
 		double rouletta = Math.random() * population.getFittest().getCurrentStrength();
 		Collections.shuffle(chromosomes);
 		for (int i = 0; i < chromosomes.size(); i++) {
+			// O primeiro com Força superior ao número gerado será o pai, exceto
+			// o próprio elitista
 			if (chromosomes.get(i).getCurrentStrength() >= rouletta && chromosomes.get(i) != c) {
 				return chromosomes.get(i);
 			}
 		}
 		return c;
+	}
+
+	/**
+	 * Da população de indivíduos cruzamentos executa mutações em certos genes
+	 * 
+	 * @param pop - População dos individuos cruzados
+	 */
+	public void mutate(Population pop) {
+		int pop_size = pop.getPopulation().size();
+		Population new_population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar, false);
+		int n_exams = calendar.getNumberOfExams();
+		int block_size = Utils.getBlocksSize(n_days);
+
+		for (int i = 0; i < pop_size; i++) {
+			Chromosome c = pop.getPopulation().get(i);
+			// Gera um número entre 0 e 1 e se for superior ao valor mínimo
+			// estipulado executa-se a mutação
+			if (Math.random() > this.mutation) {
+				Chromosome new_chromosome = new Chromosome(this.n_days, n_exams, this.calendar, true);
+				for (int j = 0; j < n_exams; j++) {
+					// Caso seja permitida a mutação haverá 50% de probabilidade
+					// de haver mutação em cada Gene
+					if (Math.random() > 0.5) {
+						new_chromosome.setGeneInPosition(j, c.getGeneByPosition(j));
+					} else {
+						Gene y = new Gene(block_size, n_days);
+						Integer[] new_gene = new Integer[block_size];
+						// Inverte os valores do bloco (p.ex 1001->0110)
+						for (int k = 0; k < block_size; k++) {
+							new_gene[k] = 1 - c.getGeneByPosition(j).getGene()[k];
+						}
+						y.setGene(new_gene);
+						// Com a mutação pode ser gerados Genes com valores não
+						// permitidos, se não for válido cancela-se a mutação
+						if (!y.validateGene()) {
+							y = c.getGeneByPosition(j);
+						}
+						new_chromosome.setGeneInPosition(j, y);
+					}
+				}
+				new_chromosome.calculateStrength();
+				new_population.addChromosome(new_chromosome);
+			} else {
+				new_population.addChromosome(c);
+			}
+		}
+		pop.setPopulation(new_population.getPopulation());
 	}
 
 }

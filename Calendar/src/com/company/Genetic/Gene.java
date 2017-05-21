@@ -43,7 +43,7 @@ public class Gene {
 	public void mutate() {
 		for (int i = 0; i < this.gene.length; i++) {
 			if (Math.random() > 0.25) {
-				//gene[i] = 1 - gene[i];
+				gene[i] = 1 - gene[i];
 			}
 		}
 		if (!validateGene()) {

@@ -2,6 +2,7 @@ package com.company;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import com.company.Genetic.Chromosome;
 import com.company.Genetic.Population;
@@ -118,41 +119,6 @@ public class GeneticAlgorithm {
 		population.calculateFittest();
 	}
 
-	/**public void checkChromosomeStrength(Chromosome chromosome) {
-		double strength = chromosome.getCurrentStrength();
-		int overlapFlag = 1; // flag=0 se houver exames sobrepostos
-		for (int i = 0; i < calendar.getStudents().size(); i++) {
-			double space = calculateSpaceBetweenExams(calendar.getStudents().get(i), chromosome);
-			if (space == -1) {
-				overlapFlag = 0;
-			}
-			double examsInDay = calendar.getStudents().get(i).calculateExamsInDay();
-			strength += space * examsInDay;
-		}
-
-		strength = (strength / calendar.getStudents().size()) * overlapFlag;
-		chromosome.setCurrentStrength(strength);
-	}
-
-	public double calculateSpaceBetweenExams(Student s, Chromosome chromosome) {
-		Integer[] slots = new Integer[s.getExams().size()];
-		for (int i = 0; i < s.getExams().size(); i++) {
-			slots[i] = Integer.parseInt(chromosome.getSlotFromGene(s.getExams().get(i).getId()), 2);
-		}
-		Arrays.sort(slots);
-
-		int x = 0;
-		for (int i = 0; i < slots.length - 1; i++) {
-			if ((slots[i + 1] - slots[i]) > 0) {
-				x += (slots[i + 1] - slots[i]);
-			} else {
-				return -1;
-			}
-
-		}
-		return x / slots.length;
-	}**/
-
 	public Object[][] getTab() {
 		Object[][] tabela = new Object[3][n_days + 1];
 		tabela[0][0] = "09h00";
@@ -221,7 +187,9 @@ public class GeneticAlgorithm {
 						new_chromosome.setGeneInPosition(j, c2.getGeneByPosition(j));
 					}
 				}
-				new_chromosome = mutateChromosome(new_chromosome);
+
+				//new_chromosome = mutateChromosome(new_chromosome);
+				new_chromosome.calculateStrength();
 				population.addChromosome(new_chromosome);
 			}
 		}
@@ -230,7 +198,7 @@ public class GeneticAlgorithm {
 	public Chromosome getCrossoverParent(Chromosome c) {
 		ArrayList<Chromosome> chromosomes = population.getPopulation();
 		double rouletta = Math.random() * population.getFittest().getCurrentStrength();
-		//Collections.shuffle(chromosomes);
+		Collections.shuffle(chromosomes);
 		for (int i = 0; i < chromosomes.size(); i++) {
 			if (chromosomes.get(i).getCurrentStrength() >= rouletta && chromosomes.get(i) != c) {
 				return chromosomes.get(i);

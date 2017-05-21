@@ -31,11 +31,84 @@ public class GeneticAlgorithm {
 		this.mutation = 0.7;
 		this.crossover = 0.5;
 		this.n_days = n_days;
-		this.iteration = 1000;
+		this.iteration = 100;
 	}
 
 	public Population getPopulation() {
 		return population;
+	}
+	
+	public void fullAutofill(){
+		Exam e1 = new Exam(0, "MEST", 1);
+		Exam e2 = new Exam(1, "PROG", 1);
+		Exam e3 = new Exam(2, "FISI1", 1);
+		Exam e4 = new Exam(3, "CMAT", 1);
+		Exam e5 = new Exam(4, "MPCP", 1);
+		
+		Exam e6 = new Exam(5, "BDAD", 2);
+		Exam e7 = new Exam(6, "CAL", 2);
+		Exam e8 = new Exam(7, "CGRA", 2);
+		Exam e9 = new Exam(8, "SOPE", 2);
+		Exam e10 = new Exam(9, "LPOO", 2);
+		
+		Exam e11 = new Exam(10, "LBAW", 3);
+		Exam e12 = new Exam(11, "IART", 3);
+		Exam e13 = new Exam(12, "COMP", 3);
+		Exam e14 = new Exam(13, "SDIS", 3);
+		Exam e15 = new Exam(14, "PPIN", 3);
+		
+		Exam e16 = new Exam(15, "IOPE", 4);
+		Exam e17 = new Exam(16, "LGPR", 4);
+		Exam e18 = new Exam(17, "ASSO", 4);
+		Exam e19 = new Exam(18, "ERSS", 4);
+		Exam e20 = new Exam(19, "MARK", 4);
+		
+		Student s1 = new Student(0, "Daniel Maciel", 1);
+		Student s2 = new Student(1, "Pedro Teles", 2);
+		Student s3 = new Student(2, "Maria Duarte", 3);
+		Student s4 = new Student(3, "Rafael Medeiros", 4);
+		Student s5 = new Student(4, "Gabriela Miranda", 4);
+		
+		calendar = new Calendar(this.n_days);
+		
+		associateExamAndStudent(s1,e1);associateExamAndStudent(s1,e2);associateExamAndStudent(s1,e3);associateExamAndStudent(s1,e4);associateExamAndStudent(s1,e5);
+		associateExamAndStudent(s2,e6);associateExamAndStudent(s2,e7);associateExamAndStudent(s2,e8);associateExamAndStudent(s2,e9);associateExamAndStudent(s2,e10);
+		associateExamAndStudent(s3,e11);associateExamAndStudent(s3,e12);associateExamAndStudent(s3,e13);associateExamAndStudent(s3,e14);associateExamAndStudent(s3,e15);
+		associateExamAndStudent(s4,e16);associateExamAndStudent(s4,e17);associateExamAndStudent(s4,e18);associateExamAndStudent(s4,e19);associateExamAndStudent(s4,e20);
+		associateExamAndStudent(s5,e1);associateExamAndStudent(s1,e8);associateExamAndStudent(s1,e12);associateExamAndStudent(s1,e16);associateExamAndStudent(s1,e20);
+		
+		calendar.addExam(e1);
+		calendar.addExam(e2);
+		calendar.addExam(e3);
+		calendar.addExam(e4);
+		calendar.addExam(e5);
+		calendar.addExam(e6);
+		calendar.addExam(e7);
+		calendar.addExam(e8);
+		calendar.addExam(e9);
+		calendar.addExam(e10);
+		calendar.addExam(e11);
+		calendar.addExam(e12);
+		calendar.addExam(e13);
+		calendar.addExam(e14);
+		calendar.addExam(e15);
+		calendar.addExam(e16);
+		calendar.addExam(e17);
+		calendar.addExam(e18);
+		calendar.addExam(e19);
+		calendar.addExam(e20);
+
+		calendar.addStudent(s1);
+		calendar.addStudent(s2);
+		calendar.addStudent(s3);
+		calendar.addStudent(s4);
+		calendar.addStudent(s5);
+		start();
+	}
+	
+	public void associateExamAndStudent(Student s, Exam e){
+		e.addStudent(s);
+		s.addExame(e);
 	}
 
 	public void autofillCalendar() {
@@ -125,7 +198,7 @@ public class GeneticAlgorithm {
 		tabela[0][0] = "09h00";
 		tabela[1][0] = "14h00";
 		tabela[2][0] = "18h00";
-		int exam;
+		int exam;	
 		for (int i = 0; i < calendar.getExams().size(); i++) {
 			exam = Integer.parseInt(population.getFittest().getSlotFromGene(calendar.getExams().get(i).getId()), 2);
 			int[] slot = Utils.convertSlotToDate(exam);
@@ -189,7 +262,6 @@ public class GeneticAlgorithm {
 			new_population.calculateFittest();
 			mutate(new_population);
 			for (Chromosome c : new_population.getPopulation()) {
-				System.out.println(c.getCurrentStrength());
 				this.population.addChromosome(c);
 			}
 			population.calculateFittest();

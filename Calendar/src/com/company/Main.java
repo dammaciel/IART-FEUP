@@ -18,6 +18,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JLabel jLabel4;
+    private boolean flag=false;
     
 	public static void main(String args[]) {
         try {
@@ -210,21 +211,26 @@ public class Main extends javax.swing.JFrame {
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
 		ga = new GeneticAlgorithm ((Integer) jSpinner1.getValue());
-	    ga.autofillCalendar();
+	    ga.fullAutofill();
         updateTable();
+        flag=true;
         jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getFittest().getCurrentStrength()));
     }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+    	if(flag){
 		ga.solveAlgoritmo();
         updateTable();
         jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getFittest().getCurrentStrength()));
+    	}
     }
     
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
+    	if(flag){
 		ga.solveAlgoritmo100();
         updateTable();
         jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getFittest().getCurrentStrength()));
+    	}
     }
     
     public void updateTable(){

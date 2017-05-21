@@ -188,7 +188,7 @@ public class GeneticAlgorithm {
 					}
 				}
 
-				//new_chromosome = mutateChromosome(new_chromosome);
+				new_chromosome = mutateChromosome(new_chromosome);
 				new_chromosome.calculateStrength();
 				population.addChromosome(new_chromosome);
 			}

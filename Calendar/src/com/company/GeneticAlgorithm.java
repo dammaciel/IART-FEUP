@@ -39,6 +39,8 @@ public class GeneticAlgorithm {
 	}
 
 	public void fullAutofill() {
+		
+
 		Exam e1 = new Exam(0, "MEST", 1);
 		Exam e2 = new Exam(1, "PROG", 1);
 		Exam e3 = new Exam(2, "FISI1", 1);
@@ -70,7 +72,7 @@ public class GeneticAlgorithm {
 		Student s5 = new Student(4, "Gabriela Miranda", 4);
 
 		calendar = new Calendar(this.n_days);
-
+		//Teste 1 Todos os estudantes tem as cadeiras em dia
 		associateExamAndStudent(s1, e1);
 		associateExamAndStudent(s1, e2);
 		associateExamAndStudent(s1, e3);
@@ -91,12 +93,66 @@ public class GeneticAlgorithm {
 		associateExamAndStudent(s4, e18);
 		associateExamAndStudent(s4, e19);
 		associateExamAndStudent(s4, e20);
-		associateExamAndStudent(s5, e1);
-		associateExamAndStudent(s5, e8);
+		associateExamAndStudent(s5, e18);
+		associateExamAndStudent(s5, e19);
 		associateExamAndStudent(s5, e12);
 		associateExamAndStudent(s5, e16);
 		associateExamAndStudent(s5, e20);
-
+		
+		//Teste 2 Metade dos estudantes tem as cadeiras em dia
+		/*associateExamAndStudent(s1, e1);
+		associateExamAndStudent(s1, e2);
+		associateExamAndStudent(s1, e3);
+		associateExamAndStudent(s1, e4);
+		associateExamAndStudent(s1, e5);
+		associateExamAndStudent(s2, e6);
+		associateExamAndStudent(s2, e3);
+		associateExamAndStudent(s2, e4);
+		associateExamAndStudent(s2, e5);
+		associateExamAndStudent(s2, e10);
+		associateExamAndStudent(s3, e11);
+		associateExamAndStudent(s3, e12);
+		associateExamAndStudent(s3, e6);
+		associateExamAndStudent(s3, e4);
+		associateExamAndStudent(s3, e5);
+		associateExamAndStudent(s4, e12);
+		associateExamAndStudent(s4, e13);
+		associateExamAndStudent(s4, e18);
+		associateExamAndStudent(s4, e19);
+		associateExamAndStudent(s4, e20);
+		associateExamAndStudent(s5, e18);
+		associateExamAndStudent(s5, e19);
+		associateExamAndStudent(s5, e12);
+		associateExamAndStudent(s5, e16);
+		associateExamAndStudent(s5, e20);*/
+		
+		//Teste 3 Todos tem cadeiras em atraso
+		/*associateExamAndStudent(s1, e1);
+		associateExamAndStudent(s1, e2);
+		associateExamAndStudent(s1, e3);
+		associateExamAndStudent(s1, e4);
+		associateExamAndStudent(s1, e5);
+		associateExamAndStudent(s2, e1);
+		associateExamAndStudent(s2, e3);
+		associateExamAndStudent(s2, e4);
+		associateExamAndStudent(s2, e5);
+		associateExamAndStudent(s2, e2);
+		associateExamAndStudent(s3, e3);
+		associateExamAndStudent(s3, e6);
+		associateExamAndStudent(s3, e7);
+		associateExamAndStudent(s3, e10);
+		associateExamAndStudent(s3, e9);
+		associateExamAndStudent(s4, e12);
+		associateExamAndStudent(s4, e13);
+		associateExamAndStudent(s4, e11);
+		associateExamAndStudent(s4, e5);
+		associateExamAndStudent(s4, e1);
+		associateExamAndStudent(s5, e1);
+		associateExamAndStudent(s5, e6);
+		associateExamAndStudent(s5, e10);
+		associateExamAndStudent(s5, e11);
+		associateExamAndStudent(s5, e15);*/
+		
 		calendar.addExam(e1);
 		calendar.addExam(e2);
 		calendar.addExam(e3);

@@ -37,46 +37,66 @@ public class GeneticAlgorithm {
 	public Population getPopulation() {
 		return population;
 	}
-	
-	public void fullAutofill(){
+
+	public void fullAutofill() {
 		Exam e1 = new Exam(0, "MEST", 1);
 		Exam e2 = new Exam(1, "PROG", 1);
 		Exam e3 = new Exam(2, "FISI1", 1);
 		Exam e4 = new Exam(3, "CMAT", 1);
 		Exam e5 = new Exam(4, "MPCP", 1);
-		
+
 		Exam e6 = new Exam(5, "BDAD", 2);
 		Exam e7 = new Exam(6, "CAL", 2);
 		Exam e8 = new Exam(7, "CGRA", 2);
 		Exam e9 = new Exam(8, "SOPE", 2);
 		Exam e10 = new Exam(9, "LPOO", 2);
-		
+
 		Exam e11 = new Exam(10, "LBAW", 3);
 		Exam e12 = new Exam(11, "IART", 3);
 		Exam e13 = new Exam(12, "COMP", 3);
 		Exam e14 = new Exam(13, "SDIS", 3);
 		Exam e15 = new Exam(14, "PPIN", 3);
-		
+
 		Exam e16 = new Exam(15, "IOPE", 4);
 		Exam e17 = new Exam(16, "LGPR", 4);
 		Exam e18 = new Exam(17, "ASSO", 4);
 		Exam e19 = new Exam(18, "ERSS", 4);
 		Exam e20 = new Exam(19, "MARK", 4);
-		
+
 		Student s1 = new Student(0, "Daniel Maciel", 1);
 		Student s2 = new Student(1, "Pedro Teles", 2);
 		Student s3 = new Student(2, "Maria Duarte", 3);
 		Student s4 = new Student(3, "Rafael Medeiros", 4);
 		Student s5 = new Student(4, "Gabriela Miranda", 4);
-		
+
 		calendar = new Calendar(this.n_days);
-		
-		associateExamAndStudent(s1,e1);associateExamAndStudent(s1,e2);associateExamAndStudent(s1,e3);associateExamAndStudent(s1,e4);associateExamAndStudent(s1,e5);
-		associateExamAndStudent(s2,e6);associateExamAndStudent(s2,e7);associateExamAndStudent(s2,e8);associateExamAndStudent(s2,e9);associateExamAndStudent(s2,e10);
-		associateExamAndStudent(s3,e11);associateExamAndStudent(s3,e12);associateExamAndStudent(s3,e13);associateExamAndStudent(s3,e14);associateExamAndStudent(s3,e15);
-		associateExamAndStudent(s4,e16);associateExamAndStudent(s4,e17);associateExamAndStudent(s4,e18);associateExamAndStudent(s4,e19);associateExamAndStudent(s4,e20);
-		associateExamAndStudent(s5,e1);associateExamAndStudent(s1,e8);associateExamAndStudent(s1,e12);associateExamAndStudent(s1,e16);associateExamAndStudent(s1,e20);
-		
+
+		associateExamAndStudent(s1, e1);
+		associateExamAndStudent(s1, e2);
+		associateExamAndStudent(s1, e3);
+		associateExamAndStudent(s1, e4);
+		associateExamAndStudent(s1, e5);
+		associateExamAndStudent(s2, e6);
+		associateExamAndStudent(s2, e7);
+		associateExamAndStudent(s2, e8);
+		associateExamAndStudent(s2, e9);
+		associateExamAndStudent(s2, e10);
+		associateExamAndStudent(s3, e11);
+		associateExamAndStudent(s3, e12);
+		associateExamAndStudent(s3, e13);
+		associateExamAndStudent(s3, e14);
+		associateExamAndStudent(s3, e15);
+		associateExamAndStudent(s4, e16);
+		associateExamAndStudent(s4, e17);
+		associateExamAndStudent(s4, e18);
+		associateExamAndStudent(s4, e19);
+		associateExamAndStudent(s4, e20);
+		associateExamAndStudent(s5, e1);
+		associateExamAndStudent(s5, e8);
+		associateExamAndStudent(s5, e12);
+		associateExamAndStudent(s5, e16);
+		associateExamAndStudent(s5, e20);
+
 		calendar.addExam(e1);
 		calendar.addExam(e2);
 		calendar.addExam(e3);
@@ -105,8 +125,8 @@ public class GeneticAlgorithm {
 		calendar.addStudent(s5);
 		start();
 	}
-	
-	public void associateExamAndStudent(Student s, Exam e){
+
+	public void associateExamAndStudent(Student s, Exam e) {
 		e.addStudent(s);
 		s.addExame(e);
 	}
@@ -184,6 +204,10 @@ public class GeneticAlgorithm {
 		start();
 	}
 
+	public ArrayList<Student> getStudents() {
+		return this.calendar.getStudents();
+	}
+
 	public void start() {
 		population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar, true);
 
@@ -193,19 +217,34 @@ public class GeneticAlgorithm {
 		population.calculateFittest();
 	}
 
-	public Object[][] getTab() {
+	public Object[][] getTab(Student combobox) {
 		Object[][] tabela = new Object[3][n_days + 1];
 		tabela[0][0] = "09h00";
 		tabela[1][0] = "14h00";
 		tabela[2][0] = "18h00";
-		int exam;	
-		for (int i = 0; i < calendar.getExams().size(); i++) {
-			exam = Integer.parseInt(population.getFittest().getSlotFromGene(calendar.getExams().get(i).getId()), 2);
-			int[] slot = Utils.convertSlotToDate(exam);
-			if (tabela[slot[0]][slot[1]] == null) {
-				tabela[slot[0]][slot[1]] = calendar.getExams().get(i).getName();
-			} else {
-				tabela[slot[0]][slot[1]] += "/" + calendar.getExams().get(i).getName();
+		int exam;
+		if (combobox == null) {
+			for (int i = 0; i < calendar.getExams().size(); i++) {
+				exam = Integer.parseInt(population.getFittest().getSlotFromGene(calendar.getExams().get(i).getId()), 2);
+				int[] slot = Utils.convertSlotToDate(exam);
+				if (tabela[slot[0]][slot[1]] == null) {
+					tabela[slot[0]][slot[1]] = calendar.getExams().get(i).getName();
+				} else {
+					tabela[slot[0]][slot[1]] += "/" + calendar.getExams().get(i).getName();
+				}
+			}
+		} else {
+			for (int i = 0; i < calendar.getExams().size(); i++) {
+				if (combobox.getExams().contains(calendar.getExams().get(i))) {
+					exam = Integer.parseInt(population.getFittest().getSlotFromGene(calendar.getExams().get(i).getId()),
+							2);
+					int[] slot = Utils.convertSlotToDate(exam);
+					if (tabela[slot[0]][slot[1]] == null) {
+						tabela[slot[0]][slot[1]] = calendar.getExams().get(i).getName();
+					} else {
+						tabela[slot[0]][slot[1]] += "/" + calendar.getExams().get(i).getName();
+					}
+				}
 			}
 		}
 		return tabela;
@@ -273,8 +312,10 @@ public class GeneticAlgorithm {
 	 * Acrescenta à população um individuo resultante do cruzamento entre o
 	 * Elitista e um outro Indivíduo;
 	 * 
-	 * @param pop - Population
-	 * @param elitist - Elitist
+	 * @param pop
+	 *            - Population
+	 * @param elitist
+	 *            - Elitist
 	 */
 	public void crossover(Population pop, Chromosome elitist) {
 		int n_exams = calendar.getNumberOfExams();
@@ -306,7 +347,8 @@ public class GeneticAlgorithm {
 	/**
 	 * Retorna o Pai que vai cruzar com o Elitista;
 	 * 
-	 * @param c - Elitist
+	 * @param c
+	 *            - Elitist
 	 * @return 2nd Parent
 	 */
 	public Chromosome getCrossoverParent(Chromosome c) {
@@ -328,7 +370,8 @@ public class GeneticAlgorithm {
 	/**
 	 * Da população de indivíduos cruzamentos executa mutações em certos genes
 	 * 
-	 * @param pop - População dos individuos cruzados
+	 * @param pop
+	 *            - População dos individuos cruzados
 	 */
 	public void mutate(Population pop) {
 		int pop_size = pop.getPopulation().size();

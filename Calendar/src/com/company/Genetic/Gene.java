@@ -40,17 +40,6 @@ public class Gene {
 		}
 	}
 
-	public void mutate() {
-		for (int i = 0; i < this.gene.length; i++) {
-			if (Math.random() > 0.25) {
-				//gene[i] = 1 - gene[i];
-			}
-		}
-		if (!validateGene()) {
-			mutate();
-		}
-	}
-
 	public String translateSlot() {
 		StringBuilder binary = new StringBuilder();
 		for (int digit : gene) {
@@ -66,8 +55,13 @@ public class Gene {
 			strNum.append(num);
 		}
 		int finalInt = Integer.parseInt(strNum.toString(),2);
-		String sb = (finalInt % 3) + " - " + (finalInt / 3) + " ; ";
+		String sb = finalInt + ";";
+		//String sb = (finalInt % 3) + " - " + (finalInt / 3) + " ; ";
 		return sb;
+	}
+
+	public void setGene(Integer[] gene) {
+		this.gene = gene;
 	}
 
 }

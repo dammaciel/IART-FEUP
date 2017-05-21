@@ -17,17 +17,14 @@ public class Chromosome {
 	private int n_genes;
 	private Calendar cal;
 
-	public Chromosome(int n_days, int n_exams, Calendar cal) {
+	public Chromosome(int n_days, int n_exams, Calendar cal, boolean bool) {
 		this.cal = cal;
 		this.n_genes = n_exams;
 		this.chromosome = new ArrayList<Gene>();
 		this.currentStrength = -1;
+		if(bool){
 		initiateChromosome(Utils.getBlocksSize(n_days), n_days);
-	}
-
-	public Chromosome() {
-		this.chromosome = new ArrayList<Gene>();
-		this.currentStrength = -1;
+		}
 	}
 
 	public void initiateChromosome(int c_length, int n_days) {
@@ -79,13 +76,6 @@ public class Chromosome {
 
 		return sb.toString();
 	}
-
-	public void mutateChromosome() {
-		for (int i = 0; i < n_genes; i++) {
-				this.getChromosome().get(i).mutate();
-		}
-		calculateStrength();
-	}
 	
 	public void calculateStrength(){
 		double strength =getCurrentStrength();
@@ -121,4 +111,10 @@ public class Chromosome {
 		}
 		return x / slots.length;
 	}
+
+	public void setChromosome(ArrayList<Gene> chromosome) {
+		this.chromosome = chromosome;
+	}
+	
+	
 }

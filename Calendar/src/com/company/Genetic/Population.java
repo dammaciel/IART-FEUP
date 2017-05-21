@@ -11,18 +11,22 @@ public class Population {
 	int n_days;
 	Chromosome fittest;
 	Calendar cal;
+	boolean bool;
 
 	
-	public Population(int populationSize, int n_exams ,int n_days, Calendar cal){
+	public Population(int populationSize, int n_exams ,int n_days, Calendar cal, boolean bool){
+		this.bool=bool;
         this.cal = cal;
 		this.population = new ArrayList<Chromosome>();
-        this.fittest = new Chromosome();
+        this.fittest = new Chromosome(n_days, n_exams, cal, false);
+        if(bool){
         initiatePopulation(populationSize, n_days, n_exams);
+        }
     }
 	
 	 public void initiatePopulation(int p_size, int n_days, int n_exams){
 	        for (int i = 0; i < p_size; i++) {
-	            population.add(new Chromosome(n_days, n_exams, cal));
+	            population.add(new Chromosome(n_days, n_exams, cal, true));
 	        }
 	    }
 
@@ -35,9 +39,7 @@ public class Population {
 	}
 	
 	public void calculateFittest(){
-		System.out.println("-------------------------------");
 		for (Chromosome c : population){
-			System.out.println(c.getCurrentStrength() + ">" +  fittest.getCurrentStrength());
 			if(c.getCurrentStrength() > fittest.getCurrentStrength()){
 				this.fittest = c;
 			}
@@ -52,7 +54,9 @@ public class Population {
 		this.population.add(c);
 	}
 	
-	
+	public void cleanPopulation (){
+		this.population.clear();
+	}
 	
 	 public String toString(){
 	    	StringBuilder sb = new StringBuilder();

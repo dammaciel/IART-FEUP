@@ -216,13 +216,13 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
-		ga.geraMutante();
+		ga.solveAlgoritmo();
         updateTable();
         jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getFittest().getCurrentStrength()));
     }
     
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
-		ga.geraMutante100();
+		ga.solveAlgoritmo100();
         updateTable();
         jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getFittest().getCurrentStrength()));
     }

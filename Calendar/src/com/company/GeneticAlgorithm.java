@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import com.company.Genetic.Chromosome;
+import com.company.Genetic.Gene;
 import com.company.Genetic.Population;
 
 import Domain.Calendar;
@@ -30,7 +31,7 @@ public class GeneticAlgorithm {
 		this.mutation = 0.7;
 		this.crossover = 0.5;
 		this.n_days = n_days;
-		this.iteration = 100;
+		this.iteration = 1000;
 	}
 
 	public Population getPopulation() {
@@ -111,7 +112,7 @@ public class GeneticAlgorithm {
 	}
 
 	public void start() {
-		population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar);
+		population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar, true);
 
 		for (Chromosome c : population.getPopulation()) {
 			c.calculateStrength();
@@ -149,36 +150,61 @@ public class GeneticAlgorithm {
 		}
 		return novo;
 	}
-
-	public void geraMutante() {
-
-		crossoverPopulation();
+	
+	public void solveAlgoritmo(){
+		Chromosome elitist = new Chromosome (this.n_days, this.calendar.getNumberOfExams(), this.calendar, false);
+		elitist.setChromosome(this.population.getFittest().getChromosome());
+		elitist.calculateStrength();
+		Population new_population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar, false);
+		for(Chromosome c: population.getPopulation()){
+			new_population.addChromosome(c);
+		}
+		new_population.calculateFittest();
+		elitist = new_population.getFittest();
+		new_population.cleanPopulation();
+		crossover(new_population, elitist);
+		new_population.calculateFittest();
+		mutate(new_population);
+		for(Chromosome c: new_population.getPopulation()){
+			this.population.addChromosome(c);
+		}
 		population.calculateFittest();
-
-		System.out.println("Finalizando");
 	}
 	
-	public void geraMutante100() {
+	public void solveAlgoritmo100(){
 		int x = this.iteration;
 		while (x > 0) {
-			crossoverPopulation();
-			population.calculateFittest();
-			x--;
+		
+		Chromosome elitist = new Chromosome (this.n_days, this.calendar.getNumberOfExams(), this.calendar, false);
+		elitist.setChromosome(this.population.getFittest().getChromosome());
+		elitist.calculateStrength();
+		Population new_population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar, false);
+		for(Chromosome c: population.getPopulation()){
+			new_population.addChromosome(c);
+		}
+		new_population.calculateFittest();
+		elitist = new_population.getFittest();
+		new_population.cleanPopulation();
+		crossover(new_population, elitist);
+		new_population.calculateFittest();
+		mutate(new_population);
+		for(Chromosome c: new_population.getPopulation()){
+			System.out.println(c.getCurrentStrength());
+			this.population.addChromosome(c);
+		}
+		population.calculateFittest();
+		x--;
 		}
 	}
 	
-	public void crossoverPopulation() {
-		System.out.println("Fazendo Crossover");
-		Population population1 = this.population;
-
+	public void crossover(Population pop, Chromosome elitist){
 		int n_exams = calendar.getNumberOfExams();
-
 		for (int i = 0; i < this.n_pop; i++) {
-			Chromosome c = population1.getFittest();
+			Chromosome c = elitist;
 			if (Math.random() > this.crossover) {
-				Chromosome new_chromosome = new Chromosome(this.n_days, n_exams, this.calendar);
+				Chromosome new_chromosome = new Chromosome(this.n_days, n_exams, this.calendar, true);
 				Chromosome c2 = getCrossoverParent(c);
-
+				
 				int breakIndex = (int) (Math.random() * n_exams);
 				for (int j = 0; j < n_exams; j++) {
 					if (j < breakIndex) {
@@ -188,11 +214,48 @@ public class GeneticAlgorithm {
 					}
 				}
 
-				new_chromosome = mutateChromosome(new_chromosome);
 				new_chromosome.calculateStrength();
-				population.addChromosome(new_chromosome);
+				pop.addChromosome(new_chromosome);
 			}
 		}
+		
+	}
+
+	public void mutate(Population pop){
+		int pop_size= pop.getPopulation().size();
+		Population new_population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar, false);
+		int n_exams = calendar.getNumberOfExams();
+		for (int i = 0; i < pop_size; i++) {
+			System.out.println("Inciio");
+
+			Chromosome c = pop.getPopulation().get(i);
+			System.out.println(c);
+			if (Math.random() > this.mutation) {
+				Chromosome new_chromosome = new Chromosome(this.n_days, n_exams, this.calendar, true);
+				for (int j = 0; j < n_exams; j++) {
+					if (Math.random() > 0.5) {
+						new_chromosome.setGeneInPosition(j, c.getGeneByPosition(j));
+					} else {
+						Gene y  = new Gene(Utils.getBlocksSize(n_days), n_days);
+						Integer[] new_gene = new Integer[Utils.getBlocksSize(n_days)];
+						for(int k =0; k<Utils.getBlocksSize(n_days); k++ ){
+							new_gene[k]=1 - c.getGeneByPosition(j).getGene()[k];
+						}
+						y.setGene(new_gene);
+						if(!y.validateGene()){
+							y = c.getGeneByPosition(j);
+						}
+						new_chromosome.setGeneInPosition(j, y);
+					}
+				}
+				System.out.println(new_chromosome);
+				new_chromosome.calculateStrength();
+				new_population.addChromosome(new_chromosome);
+			}else{
+				new_population.addChromosome(c);
+			}
+		}
+		pop.setPopulation(new_population.getPopulation());
 	}
 	
 	public Chromosome getCrossoverParent(Chromosome c) {
@@ -205,16 +268,6 @@ public class GeneticAlgorithm {
 			}
 		}
 		return c;
-	}
-	
-	public Chromosome mutateChromosome(Chromosome c) {
-		Chromosome chromo = c;
-		double roulette = Math.random();
-		if (roulette > this.mutation) {
-			chromo.mutateChromosome();
-			chromo.calculateStrength();
-		}
-		return chromo;
 	}
 
 }

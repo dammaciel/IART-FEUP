@@ -1,58 +1,69 @@
 package com.company.Genetic;
 
 import java.util.ArrayList;
+
+import Domain.Calendar;
 import Utils.Utils;
 
-
-/**
- * Created by danma on 12/05/2017.
- */
 public class Population {
-    private ArrayList<Chromosome> chromosomes;
-    private double currentStrength;
+	ArrayList<Chromosome> population;
+	int n_exams;
+	int n_days;
+	Chromosome fittest;
+	Calendar cal;
 
-    public Population(int populationSize, int n_days){
-        this.chromosomes = new ArrayList<Chromosome>();
-        this.currentStrength = -1;
-        initiatePopulation(populationSize, Utils.getBlocksSize(n_days), n_days);
+	
+	public Population(int populationSize, int n_exams ,int n_days, Calendar cal){
+        this.cal = cal;
+		this.population = new ArrayList<Chromosome>();
+        this.fittest = new Chromosome();
+        initiatePopulation(populationSize, n_days, n_exams);
     }
-    
-    public Population(){
-    	this.chromosomes = new ArrayList<Chromosome>();
-        this.currentStrength = -1;
-    }
+	
+	 public void initiatePopulation(int p_size, int n_days, int n_exams){
+	        for (int i = 0; i < p_size; i++) {
+	            population.add(new Chromosome(n_days, n_exams, cal));
+	        }
+	    }
 
-    public void initiatePopulation(int p_size, int c_length, int n_days){
-        for (int i = 0; i < p_size; i++) {
-            chromosomes.add(new Chromosome(c_length, n_days));
-        }
-    }
-
-    public double getCurrentStrength() {
-        return currentStrength;
-    }
-
-    public void setCurrentStrength(double currentStrength) {
-        this.currentStrength = currentStrength;
-    }
-
-    public ArrayList<Chromosome> getChromosomes() {
-        return chromosomes;
-    }
-
-    public void setChromosomes(ArrayList<Chromosome> chromosomes) {
-        this.chromosomes = chromosomes;
-    }
-
-    public String getSlotFromChromosome (int id_exame){
-       return chromosomes.get(id_exame).translateSlot();
-    }
-    
-    public Chromosome getChromosomeByPosition(int index){		
-		return chromosomes.get(index);
+	public ArrayList<Chromosome> getPopulation() {
+		return population;
 	}
-    
-    public void addChromosome(Chromosome c){
-    	this.chromosomes.add(c);
-    }
+
+	public void setPopulation(ArrayList<Chromosome> population) {
+		this.population = population;
+	}
+	
+	public void calculateFittest(){
+		System.out.println("-------------------------------");
+		for (Chromosome c : population){
+			System.out.println(c.getCurrentStrength() + ">" +  fittest.getCurrentStrength());
+			if(c.getCurrentStrength() > fittest.getCurrentStrength()){
+				this.fittest = c;
+			}
+		}
+	}
+	
+	public Chromosome getFittest(){
+		return this.fittest;
+	}
+	
+	public void addChromosome (Chromosome c){
+		this.population.add(c);
+	}
+	
+	
+	
+	 public String toString(){
+	    	StringBuilder sb = new StringBuilder();
+	    	
+			for(int i = 0; i < population.size() - 1; i++){
+				sb.append(population.get(i).toString());
+				sb.append(",");
+			}
+			sb.append(population.get(population.size() - 1));
+	    	
+	    	return sb.toString();
+	    }
+	
 }

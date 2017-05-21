@@ -9,6 +9,7 @@ public class Main extends javax.swing.JFrame {
 	
 	private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -57,6 +58,7 @@ public class Main extends javax.swing.JFrame {
          jLabel3 = new javax.swing.JLabel();
          jButton1 = new javax.swing.JButton();
          jButton2 = new javax.swing.JButton();
+         jButton3 = new javax.swing.JButton();
          jScrollPane1 = new javax.swing.JScrollPane();
          jTable1 = new javax.swing.JTable();
          jLabel4 = new javax.swing.JLabel();
@@ -94,6 +96,13 @@ public class Main extends javax.swing.JFrame {
          jButton1.addActionListener(new java.awt.event.ActionListener() {
              public void actionPerformed(java.awt.event.ActionEvent evt) {
                  jButton1ActionPerformed(evt);
+             }
+         });
+         
+         jButton3.setText("Executar 100xAlgoritmo");
+         jButton3.addActionListener(new java.awt.event.ActionListener() {
+             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                 jButton3ActionPerformed(evt);
              }
          });
 
@@ -135,10 +144,13 @@ public class Main extends javax.swing.JFrame {
                              .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                              .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                      .addGroup(jPanel1Layout.createSequentialGroup()
-                         .addContainerGap(282, Short.MAX_VALUE)
-                         .addComponent(jButton2)
-                         .addGap(0, 240, Short.MAX_VALUE)
-                         .addComponent(jButton1))
+                    		 .addContainerGap(282, Short.MAX_VALUE)
+                             .addComponent(jButton2)
+                             .addGap(49, 49, 49)
+                             .addComponent(jButton1)
+                             .addGap(49, 49, 49)
+                             .addComponent(jButton3)
+                             .addGap(0, 240, Short.MAX_VALUE))
                      .addGroup(jPanel1Layout.createSequentialGroup()
                          .addContainerGap(282, Short.MAX_VALUE)
                          .addComponent(jLabel3)
@@ -163,7 +175,8 @@ public class Main extends javax.swing.JFrame {
                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                  .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                      .addComponent(jButton2)
-                     .addComponent(jButton1))
+                     .addComponent(jButton1)
+                     .addComponent(jButton3))
                  .addGap(28, 28, 28)
                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                  .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -196,16 +209,22 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
-		ga = new GeneticAlgorithm((Integer) jSpinner1.getValue());
+		ga = new GeneticAlgorithm ((Integer) jSpinner1.getValue());
 	    ga.autofillCalendar();
         updateTable();
-        jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getCurrentStrength()));
+        jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getFittest().getCurrentStrength()));
     }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 		ga.geraMutante();
         updateTable();
-        jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getCurrentStrength()));
+        jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getFittest().getCurrentStrength()));
+    }
+    
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
+		ga.geraMutante100();
+        updateTable();
+        jLabel4.setText("Força do Calendário: " + String.valueOf(ga.getPopulation().getFittest().getCurrentStrength()));
     }
     
     public void updateTable(){

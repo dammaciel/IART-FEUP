@@ -2,6 +2,7 @@ package com.company;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import com.company.Genetic.Chromosome;
 import com.company.Genetic.Population;
@@ -11,10 +12,7 @@ import Domain.Exam;
 import Domain.Student;
 import Utils.Utils;
 
-/**
- * Created by danma on 12/05/2017.
- */
-public class GeneticAlgorithm {
+public class GA {
 	double mutation;
 	double crossover;
 	double elitist;
@@ -24,12 +22,12 @@ public class GeneticAlgorithm {
 	Population population;
 	int iteration;
 
-	public GeneticAlgorithm(int n_days) {
+	public GA(int n_days) {
 		this.n_pop = 10;
 		this.mutation = 0.7;
 		this.crossover = 0.5;
 		this.n_days = n_days;
-		this.iteration = 100;
+		this.iteration = 10;
 	}
 
 	public Population getPopulation() {
@@ -110,15 +108,17 @@ public class GeneticAlgorithm {
 	}
 
 	public void start() {
-		population = new Population(n_pop, calendar.getNumberOfExams(), n_days, this.calendar);
+		//population = new Population(n_pop, calendar.getNumberOfExams(), n_days);
 
 		for (Chromosome c : population.getPopulation()) {
-			c.calculateStrength();
+			this.checkChromosomeStrength(c);
 		}
 		population.calculateFittest();
 	}
 
-	/**public void checkChromosomeStrength(Chromosome chromosome) {
+	public void checkChromosomeStrength(Chromosome chromosome) {
+		System.out.println("CHROMOSOME: " + chromosome);
+
 		double strength = chromosome.getCurrentStrength();
 		int overlapFlag = 1; // flag=0 se houver exames sobrepostos
 		for (int i = 0; i < calendar.getStudents().size(); i++) {
@@ -132,6 +132,7 @@ public class GeneticAlgorithm {
 
 		strength = (strength / calendar.getStudents().size()) * overlapFlag;
 		chromosome.setCurrentStrength(strength);
+		System.out.println("Strength: " + chromosome.getCurrentStrength());
 	}
 
 	public double calculateSpaceBetweenExams(Student s, Chromosome chromosome) {
@@ -151,7 +152,7 @@ public class GeneticAlgorithm {
 
 		}
 		return x / slots.length;
-	}**/
+	}
 
 	public Object[][] getTab() {
 		Object[][] tabela = new Object[3][n_days + 1];
@@ -159,7 +160,6 @@ public class GeneticAlgorithm {
 		tabela[1][0] = "14h00";
 		tabela[2][0] = "18h00";
 		int exam;
-		//System.out.println(this.population.getFittest() + " - " + this.population.getFittest().getCurrentStrength());
 		for (int i = 0; i < calendar.getExams().size(); i++) {
 			exam = Integer.parseInt(population.getFittest().getSlotFromGene(calendar.getExams().get(i).getId()), 2);
 			int[] slot = Utils.convertSlotToDate(exam);
@@ -185,24 +185,16 @@ public class GeneticAlgorithm {
 	}
 
 	public void geraMutante() {
-
-		crossoverPopulation();
-		population.calculateFittest();
-
-		System.out.println("Finalizando");
-	}
-	
-	public void geraMutante100() {
+		
+		System.out.println("\n\nALGORITMO GENETICO");
 		int x = this.iteration;
 		while (x > 0) {
-			crossoverPopulation();
-			population.calculateFittest();
+			//crossoverPopulation();
 			x--;
 		}
 	}
-	
+/**
 	public void crossoverPopulation() {
-		System.out.println("Fazendo Crossover");
 		Population population1 = this.population;
 
 		int n_exams = calendar.getNumberOfExams();
@@ -210,7 +202,7 @@ public class GeneticAlgorithm {
 		for (int i = 0; i < this.n_pop; i++) {
 			Chromosome c = population1.getFittest();
 			if (Math.random() > this.crossover) {
-				Chromosome new_chromosome = new Chromosome(this.n_days, n_exams, this.calendar);
+				//Chromosome new_chromosome = new Chromosome(this.n_days, n_exams);
 				Chromosome c2 = getCrossoverParent(c);
 
 				int breakIndex = (int) (Math.random() * n_exams);
@@ -223,10 +215,12 @@ public class GeneticAlgorithm {
 				}
 				new_chromosome = mutateChromosome(new_chromosome);
 				population.addChromosome(new_chromosome);
+				population.calculateFittest();
+
 			}
 		}
-	}
-	
+	}**/
+
 	public Chromosome getCrossoverParent(Chromosome c) {
 		ArrayList<Chromosome> chromosomes = population.getPopulation();
 		double rouletta = Math.random() * population.getFittest().getCurrentStrength();
@@ -238,15 +232,13 @@ public class GeneticAlgorithm {
 		}
 		return c;
 	}
-	
+
 	public Chromosome mutateChromosome(Chromosome c) {
 		Chromosome chromo = c;
 		double roulette = Math.random();
 		if (roulette > this.mutation) {
 			chromo.mutateChromosome();
-			chromo.calculateStrength();
 		}
 		return chromo;
 	}
-
 }
